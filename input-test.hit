@@ -3,8 +3,8 @@
 # Paul Johnson
 
 # Parameters
-xmin = 1.00000e-01
-xmax = 1.00000e+03
+xmin = 0.00000e+00
+xmax = 1.00000e+02
 diff_coeff = 0.87000e+00
 u_left = 1.000e+06
 velocity = 2.200E+03
