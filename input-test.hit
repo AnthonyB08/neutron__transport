@@ -5,11 +5,11 @@
 # Parameters
 xmin = 1.00000e-01
 xmax = 1.00000e+03
-diff_coeff = 2.04000e+00
-u_left = 4.17000e+00
-velocity = 2.393E+09
+diff_coeff = 0.87000e+00
+u_left = 1.000e+06
+velocity = 2.200E+03
 transfer_coeff_right = velocity/2
-sigma_a = 0.13
+sigma_a = 0.022
 sigma_s12 = 0.0
 sigma_s13 = 0.0
 sigma_s23 = 0.0
