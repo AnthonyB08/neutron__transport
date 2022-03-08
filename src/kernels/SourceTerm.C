@@ -37,11 +37,11 @@ SourceTerm::SourceTerm(const InputParameters & parameters):
 Real
 SourceTerm::computeQpResidual()
 {
- return (_sigma_sa * _coupledGroupA[_qp] + _sigma_sb * _coupledGroupB[_qp]) * _test[_i][_qp];
+ return -(_sigma_sa * _coupledGroupA[_qp] + _sigma_sb * _coupledGroupB[_qp]) * _test[_i][_qp];
 }
 
 Real
 SourceTerm::computeQpJacobian()
 {
- return (_sigma_sa + _sigma_sb) * _phi[_j][_qp] * _test[_i][_qp];
+ return -(_sigma_sa + _sigma_sb) * _phi[_j][_qp] * _test[_i][_qp];
 }
