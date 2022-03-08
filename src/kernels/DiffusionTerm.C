@@ -30,12 +30,12 @@ DiffusionTerm::DiffusionTerm(const InputParameters & parameters):
 Real
 DiffusionTerm::computeQpResidual()
 {
-  return - (- _diffCoeff * _grad_u[_qp] * _grad_test[_i][_qp]);
+  return -(- _diffCoeff * _grad_u[_qp] * _grad_test[_i][_qp]);
 }
 
 // Jacobian diagonal
 Real
 DiffusionTerm::computeQpJacobian()
 {
-  return - (- _diffCoeff * _grad_phi[_j][_qp] * _grad_test[_i][_qp]) ;
+  return  -(- _diffCoeff * _grad_phi[_j][_qp] * _grad_test[_i][_qp]) ;
 }
