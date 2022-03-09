@@ -3,7 +3,7 @@
 # Paul Johnson
 
 # Parameters
-xmin = 1.00000e-01
+xmin = 0.00000e+00
 xmax = 1.00000e+03
 diff_coeff = 2.04000e+00
 u_left = 4.17000e+00
