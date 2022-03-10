@@ -3,7 +3,7 @@
 # Paul Johnson
 
 # Parameters
-xmin = 0.00000e+00
+xmin = 1.00000e-01
 xmax = 1.00000e+01
 diff_coeff = 0.87000e+00
 u_left = 1.000e+06
@@ -11,7 +11,9 @@ u2_left = 0.000e+00
 velocity = 2.200E+03
 transfer_coeff_right = velocity/2
 sigma_a = 0.022
-sigma_s12 = 0.07
+sigma_a2 = 0.00
+
+sigma_s12 = 0.87
 sigma_s13 = 0.0
 sigma_s23 = 0.0
 
@@ -42,7 +44,6 @@ sigma_s23 = 0.0
     family = lagrange
     initial_condition = ${replace u_left}
   []
-
 []
 
 [Kernels]
@@ -56,7 +57,6 @@ sigma_s23 = 0.0
     variable = u2     # produced quantity
     diffCoeff = ${replace diff_coeff}
   []
-
   [absorption-term-1]
     type = AbsorptionTerm
     variable = u1     # produced quantity
@@ -67,7 +67,6 @@ sigma_s23 = 0.0
     variable = u2     # produced quantity
     sigmaA = ${replace sigma_a}
   []
-
   [source-term-2]
     type = SourceTerm
     variable = u2
@@ -75,7 +74,6 @@ sigma_s23 = 0.0
     sigma_sa = ${replace sigma_s12}
     coupledGroupB = u2
   []
-
 []
 
 [BCs]
@@ -103,7 +101,6 @@ sigma_s23 = 0.0
     boundary = right
     value = 0.0
   []
-
 []
 
 [Preconditioning]
