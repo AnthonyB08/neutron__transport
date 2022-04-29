@@ -29,7 +29,7 @@ InputParameters validParams<FissionTerm2G>()
   params.addParam<Real>("sigmaF",0.0,"Macroscopic fission cross-section");
   params.addParam<Real>("v",0.0,"neutron emission");
   params.addParam<Real>("k",0.0,"mutiplicity factor");
-    params.addParam<Real>("fission_spectrum",0.0,"fission spectrum of group");
+  params.addParam<Real>("fission_spectrum",0.0,"fission spectrum of group");
   return params;
 }
 
@@ -38,7 +38,7 @@ FissionTerm2G::FissionTerm2G(const InputParameters & parameters) : Kernel(parame
     _sigmaF(getParam<Real>("sigmaF")),
 	_v(getParam<Real>("v")),
 	_k(getParam<Real>("k")),
-	_chi(getParam<Real>("fission_spectrum")
+	_chi(getParam<Real>("fission_spectrum"))
 
 {
 }
