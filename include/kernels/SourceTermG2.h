@@ -11,10 +11,10 @@
 
 #include "Kernel.h"
 
-class SourceTerm : public Kernel
+class SourceTermG2 : public Kernel
 {
 public:
-  SourceTerm(const InputParameters & parameters);
+  SourceTermG2(const InputParameters & parameters);
 
 protected:
   /// Residual
