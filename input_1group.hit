@@ -1,22 +1,20 @@
 # Engy-5310 Problem 1: Poisson 1D FEM Neutron Diffusion Equation
 # UMass Lowell Nuclear Chemical Engineering
-# Paul Johnson
+# Anthony Bowers Andrew  Hamel
 
 # Parameters
 xmin = 0.00000e+00
 xmax = 1.00000e+01
-diff_coeff = 0.87000e+00
-u_left = 1.000e+07
-velocity = 2.200E+03
-transfer_coeff_right = velocity/2
-sigma_a = 0.022
-sigma_s12 = 0.007
-sigma_s13 = 0.0
-sigma_s23 = 0.0
+diff_coeff = 1.44
+sigma_f= 0.1
+sigma_a = 0.1
+v=2.4355
+k=1.797011
 
 [Problem]
   type = FEProblem
   coord_type = RSPHERICAL
+  #coord_type = XYZ
 []
 
 [Mesh]
@@ -25,7 +23,7 @@ sigma_s23 = 0.0
     dim = 1
     xmin = ${replace xmin}
     xmax = ${replace xmax}
-    nx = 10000
+    nx = 30
     elem_type = edge3
   []
 []
@@ -34,14 +32,8 @@ sigma_s23 = 0.0
   [u1]
     order = second
     family = lagrange
-    initial_condition = ${replace u_left}
   []
-  [u2]
-    order = second
-    family = lagrange
-    initial_condition = ${replace u_left}
-  []
- 
+
 []
 
 [Kernels]
@@ -50,63 +42,45 @@ sigma_s23 = 0.0
     variable = u1     # produced quantity
     diffCoeff = ${replace diff_coeff}
   []
-  [diffusion-term-2]
-    type = DiffusionTerm
-    variable = u2     # produced quantity
-    diffCoeff = ${replace diff_coeff}
-  []
+
   
   [absorption-term-1]
     type = AbsorptionTerm
     variable = u1     # produced quantity
     sigmaA = ${replace sigma_a}
   []
-  [absorption-term-2]
-    type = AbsorptionTerm
-    variable = u2     # produced quantity
-    sigmaA =  ${replace sigma_s12}
+
+   [fission-term-1]
+    type = FissionTerm
+    variable = u1     # produced quantity
+    sigmaF = ${replace sigma_f}
+	k=${replace k}
+	v=${replace v}
   []
 
- #[source-term-1]
-  #  type = SourceTerm
-    #variable = u1
-    #coupledGroupA = u1
-    #coupledGroupB = u1
-  #[]
-  [source-term-2]
-    type = SourceTerm
-    variable = u2
-    coupledGroupA = u1
-    sigma_sa =${replace sigma_s12}
-    coupledGroupB = u1
-  []
+
 
 []
 
 [BCs]
-  [entry-u1]
-    type = DirichletBC
-    variable = u1
-    boundary = left
-    value = ${replace u_left}
+
+ [entry-u1]
+   type = NeumannBC
+   variable = u1
+   boundary = left
+   value = 0
   []
+ 
   [exit-u1]
-    type = VacuumBC
+   type = VacuumBC
     variable = u1
     boundary = right
+ 
+# Testing with Bare Slab 
+    #type = DirichletBC
+	#value=0
   []
-  [entry-u2]
-    type = NeumannBC
-    variable = u2
-    boundary = left
-    value = 0
-  []
-  [exit-u2]
-    type = VacuumBC
-    variable = u2
-    boundary = right
-     
-  []
+ 
 
 []
 
@@ -123,13 +97,14 @@ sigma_s23 = 0.0
 
 [Executioner]
   type = Steady
+  #solve_type = PJFNK
 []
 
 [VectorPostprocessors]
   [x-data]
     type = LineValueSampler
     execute_on = 'timestep_end final'
-    variable = 'u1 u2'    # output data
+    variable = 'u1 '    # output data
     start_point = '${replace xmin} 0 0'
     end_point = '${replace xmax} 0 0'
     num_points = 6001

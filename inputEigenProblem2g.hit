@@ -1,0 +1,189 @@
+# Engy-5050 Problem 1: Poisson 1D FEM Neutron Diffusion Equation
+# UMass Lowell Nuclear Chemical Engineering
+# Anthony Bowers
+
+# Parameters
+xmin = 0.00000e+00
+xmax = 4.45
+
+diff_coeff = 0.017064370782453382
+diff_coeff_2= 0.01121372937132651
+
+sigma_s12 =  38.21845653483355
+
+
+
+
+[Problem]
+  type = EigenProblem
+  coord_type = RSPHERICAL
+[]
+
+[Mesh]
+  [1d]
+    type = GeneratedMeshGenerator
+    dim = 1
+    xmin = ${replace xmin}
+    xmax = ${replace xmax}
+    nx = 20
+    elem_type = edge3
+  []
+[]
+
+[Variables]
+  [u1]
+    order = first
+    family = lagrange
+    
+  []
+  [u2]
+    order = first
+    family = lagrange
+
+  []
+[]
+
+[Kernels]
+
+  [diffusion-term-1]
+    type = DiffusionTerm
+    variable = u1     # produced quantity
+    diffCoeff = ${replace diff_coeff}
+  []
+  [diffusion-term-2]
+    type = DiffusionTerm
+    variable = u2     # produced quantity
+    diffCoeff = ${replace diff_coeff_2}
+  []
+  
+  [eigenvalue-term-1]
+    type = CoefReaction
+    variable = u1     # produced quantity
+    extra_vector_tags='eigen'
+	coefficient = -1.0
+  []
+    [eigenvalue-term-2]
+    type = CoefReaction
+    variable = u2    # produced quantity
+    extra_vector_tags='eigen'
+	coefficient = -1.0
+  []
+
+    [source-term-2]
+    type = SourceTermG2
+    variable = u2
+    coupledGroupA = u1
+    sigma_sa = ${replace sigma_s12}
+    coupledGroupB = u2
+  []
+  [source-term-1]
+    type = SourceTermG1
+    variable = u1
+    
+    sigma_sa = ${replace sigma_s12}
+  
+  []
+
+[]
+
+[BCs]
+  [entry-u1]
+    type = NeumannBC
+	
+    variable = u1
+    boundary = left
+    value = 0
+  []
+  
+  [exit-u1]
+    type = VacuumBC
+    variable = u1
+    boundary = right
+	#value= 0
+  []
+  
+  [entry-u2]
+    type = NeumannBC
+    variable = u2
+    boundary = left
+    value = 0
+  []
+  [exit-u2]
+    type = VacuumBC
+    variable = u2
+    boundary = right
+    
+  []
+  
+   
+ 
+
+[]
+
+
+
+[Executioner]
+  type = Eigenvalue
+  solve_type = PJFNK
+  nl_abs_tol = 1e-8
+  nl_rel_tol = 1e-8
+  #eigen_problem_type = gen_non_hermitian
+  #which_eigen_pairs = SMALLEST_MAGNITUDE
+  #n_eigen_pairs = 1
+  #n_basis_vectors = 18
+  #solve_type = jacobi_davidson
+  #petsc_options = '-eps_view'
+   # Postprocessor value to normalize
+  normalization =u-normalized 
+  # Value to set normilization to
+ 
+  
+ 
+  
+[]
+
+[VectorPostprocessors]
+  [eigenvalue-data]
+    type = Eigenvalues
+    execute_on = 'timestep_end final'
+  []
+ 
+  [x-data]
+    type = LineValueSampler
+    execute_on = 'timestep_end final'
+    variable = 'u1 u2'    # output data
+    start_point = '${replace xmin} 0 0'
+    end_point = '${replace xmax} 0 0'
+    num_points = 20
+    sort_by = id
+  []
+[]
+
+[Postprocessors]
+  #[unorm]
+   # type = ElementIntegralVariablePostprocessor
+    #variable ='u1 u2'
+    #execute_on = linear
+ #[]
+   [u-normalized]
+    type = ElementExtremeValue
+    variable = u1
+    value_type = max
+	execute_on=linear
+  []
+   [u-normalized2]
+    type = ElementExtremeValue
+    variable = u2
+    value_type = max
+	execute_on=linear
+  []
+
+ 
+[]
+
+[Outputs]
+  console = true
+  csv= true
+
+ 
+[]

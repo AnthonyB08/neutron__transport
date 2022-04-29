@@ -9,13 +9,13 @@ diff_coeff = 0.87000e+00
 u_left = 1.000e+06
 u2_left = 0.000e+00
 velocity = 2.200E+03
+
 transfer_coeff_right = velocity/2
 sigma_a = 0.022
-sigma_a2 = 0.00
+
 
 sigma_s12 = 0.87
-sigma_s13 = 0.0
-sigma_s23 = 0.0
+
 
 [Problem]
   type = FEProblem
@@ -68,11 +68,18 @@ sigma_s23 = 0.0
     sigmaA = ${replace sigma_a}
   []
   [source-term-2]
-    type = SourceTerm
+    type = SourceTermG2
     variable = u2
     coupledGroupA = u1
     sigma_sa = ${replace sigma_s12}
     coupledGroupB = u2
+  []
+  [source-term-1]
+    type = SourceTermG1
+    variable = u1
+    #coupledGroupA = u1
+    sigma_sa = ${replace sigma_s12}
+    #coupledGroupB = u1
   []
 []
 
@@ -87,7 +94,7 @@ sigma_s23 = 0.0
     type = VacuumBC
     variable = u1
     boundary = right
-    value = 0.0
+    
   []
   [entry-u2]
     type = NeumannBC
@@ -99,7 +106,7 @@ sigma_s23 = 0.0
     type = VacuumBC
     variable = u2
     boundary = right
-    value = 0.0
+    
   []
 []
 
