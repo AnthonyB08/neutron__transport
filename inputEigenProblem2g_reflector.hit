@@ -19,13 +19,13 @@ sigma_s12 = 0.03560287029288702
   coord_type = RSPHERICAL
 []
 
-[Mesh] 
+[Mesh]
   [1d]
     type = GeneratedMeshGenerator
     dim = 1
     xmin = ${replace xmin}
     xmax = ${replace xmax}
-    nx = 35
+    nx = 30
 	#45
 	#30
     elem_type = edge3
@@ -132,10 +132,11 @@ sigma_s12 = 0.03560287029288702
   []
   
   [exit-u1]
-    type = VacuumBC
+      type = PostprocessorNeumannBC_Albedo
     variable = u1
     boundary = right
-	#value= 0
+    postprocessor = right_u1
+	  execute_on = linear
   []
   
   [entry-u2]
@@ -145,10 +146,11 @@ sigma_s12 = 0.03560287029288702
     value = 0
   []
   [exit-u2]
-    type = VacuumBC
+    type = PostprocessorNeumannBC_Albedo
     variable = u2
     boundary = right
-    
+    postprocessor = right_u2
+    execute_on = linear
   []
   
    
@@ -160,12 +162,11 @@ sigma_s12 = 0.03560287029288702
 
 [Executioner]
   type = Eigenvalue
-  solve_type = PJFNK
+   solve_type = 'PJFNK'
+  petsc_options_iname = '-pc_type -pc_hypre_type'
+  petsc_options_value = 'hypre boomeramg'
   nl_abs_tol = 1e-8
   nl_rel_tol = 1e-8
-  
- 
-  
   
    # Postprocessor value to normalize
   normalization =u-normalized 
@@ -199,6 +200,23 @@ sigma_s12 = 0.03560287029288702
     #variable ='u1 u2'
     #execute_on = linear
  #[]
+ 
+ 
+  [right_u2]
+    type = PointValue
+    point = '${replace xmax} 0 0'
+    variable =diffFlux_u2
+  
+  []
+  [right_u1]
+    type = PointValue
+    point = '${replace xmax} 0 0'
+    variable =diffFlux_u1
+  
+  []
+  
+
+
    [u-normalized]
     type = ElementExtremeValue
     variable = u1
@@ -211,19 +229,7 @@ sigma_s12 = 0.03560287029288702
     value_type = max
 	execute_on=linear
   []
- [u2_end_flux]
-    type = PointValue
-    point = '${replace xmax} 0 0'
-    variable =diffFlux_u2
-	execute_on = 'initial'
-  
-  []
-  [u1_end_flux]
-    type = PointValue
-    point = '${replace xmax} 0 0'
-    variable =diffFlux_u1
-  execute_on = 'initial'
-  []
+
  
 []
 
