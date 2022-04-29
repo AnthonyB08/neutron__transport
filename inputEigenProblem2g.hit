@@ -6,8 +6,8 @@
 xmin = 0.00000e+00
 xmax = 3.44
 
-diff_coeff =1.83180150273944
-diff_coeff_2= 1.203755273228775
+diff_coeff = 1.83180150273944
+diff_coeff_2 = 1.203755273228775
 
 sigma_s12 = 0.03560287029288702
 
@@ -17,6 +17,7 @@ sigma_s12 = 0.03560287029288702
 [Problem]
   type = EigenProblem
   coord_type = RSPHERICAL
+  which_eigen_pairs = SMALLEST_MAGNITUDE
 []
 
 [Mesh] 
@@ -73,12 +74,10 @@ sigma_s12 = 0.03560287029288702
     field = u2
     diffCoeff = ${replace diff_coeff_2}
     component = x
-    variable = diffFlux_u2    # produced quantity
-	
+    variable = diffFlux_u2    # produced quantity	
   []
-  
-  
-  []
+[]
+
 [Kernels]
 
   [diffusion-term-1]
@@ -117,9 +116,7 @@ sigma_s12 = 0.03560287029288702
     variable = u1
     
     sigma_sa = ${replace sigma_s12}
-  
   []
-
 []
 
 [BCs]
@@ -150,30 +147,17 @@ sigma_s12 = 0.03560287029288702
     boundary = right
     
   []
-  
-   
- 
-
 []
-
-
 
 [Executioner]
   type = Eigenvalue
   solve_type = PJFNK
   nl_abs_tol = 1e-8
   nl_rel_tol = 1e-8
-  
- 
-  
-  
+
    # Postprocessor value to normalize
   normalization =u-normalized 
   # Value to set normilization to
- 
-  
- 
-  
 []
 
 [VectorPostprocessors]
@@ -215,14 +199,14 @@ sigma_s12 = 0.03560287029288702
     type = PointValue
     point = '${replace xmax} 0 0'
     variable =diffFlux_u2
-	execute_on = 'initial'
+	#execute_on = 'initial'
   
   []
   [u1_end_flux]
     type = PointValue
     point = '${replace xmax} 0 0'
     variable =diffFlux_u1
-  execute_on = 'initial'
+  #execute_on = 'initial'
   []
  
 []

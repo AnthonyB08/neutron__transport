@@ -7,33 +7,30 @@
 //* Licensed under LGPL 2.1, please see LICENSE for details
 //* https://www.gnu.org/licenses/lgpl-2.1.html
 
-#include "PostprocessorNeumannBC_Albedo.h"
+#include "PostprocessorNeumannBC_custom.h"
 
-registerMooseObject("Neutron_TransportApp", PostprocessorNeumannBC_Albedo);
+registerMooseObject("Neutron_TransportApp", PostprocessorNeumannBC_custom);
 
-defineLegacyParams(PostprocessorNeumannBC_Albedo);
+defineLegacyParams(PostprocessorNeumannBC_custom);
 
 InputParameters
-PostprocessorNeumannBC_Albedo::validParams()
+PostprocessorNeumannBC_custom::validParams()
 {
   InputParameters params = IntegratedBC::validParams();
   params.addClassDescription(
       "Neumann boundary condition with value prescribed by a Postprocessor value.");
   params.addParam<PostprocessorName>(
       "postprocessor", 0.0, "The postprocessor to use for value of the gradient on the boundary.");
-  params.addRequiredParam<Real>("alpha", "Albedo alpha value");
   return params;
 }
 
-PostprocessorNeumannBC_Albedo::PostprocessorNeumannBC_Albedo(const InputParameters & parameters)
-  : IntegratedBC(parameters),
-  _value(getPostprocessorValue("postprocessor")),
-  _alpha(getParam<Real>("alpha"))
+PostprocessorNeumannBC_custom::PostprocessorNeumannBC_custom(const InputParameters & parameters)
+  : IntegratedBC(parameters), _value(getPostprocessorValue("postprocessor"))
 {
 }
 
 Real
-PostprocessorNeumannBC_Albedo::computeQpResidual()
+PostprocessorNeumannBC_custom::computeQpResidual()
 {
-  return -(((_alpha-1)/(_alpha + 1))/2 *_test[_i][_qp] * _value);
+  return -_test[_i][_qp] * 0.2 * _value;
 }

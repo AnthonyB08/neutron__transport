@@ -11,16 +11,16 @@
 
 #include "IntegratedBC.h"
 
-class PostprocessorNeumannBC_Albedo;
+class PostprocessorNeumannBC_custom;
 
 template <>
-InputParameters validParams<PostprocessorNeumannBC_Albedo>();
+InputParameters validParams<PostprocessorNeumannBC_custom>();
 
 /**
  * Implements a constant Neumann BC where grad(u) is a equal to a postprocessor on the boundary.
  * Uses the term produced from integrating the diffusion operator by parts.
  */
-class PostprocessorNeumannBC_Albedo : public IntegratedBC
+class PostprocessorNeumannBC_custom : public IntegratedBC
 {
 public:
   /**
@@ -29,12 +29,11 @@ public:
    */
   static InputParameters validParams();
 
-  PostprocessorNeumannBC_Albedo(const InputParameters & parameters);
+  PostprocessorNeumannBC_custom(const InputParameters & parameters);
 
 protected:
   virtual Real computeQpResidual() override;
 
   /// Value of grad(u) on the boundary.
   const PostprocessorValue & _value;
-  const Real & _alpha;
 };

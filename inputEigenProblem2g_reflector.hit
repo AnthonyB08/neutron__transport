@@ -4,7 +4,7 @@
 
 # Parameters
 xmin = 0.00000e+00
-xmax = 3.44
+xmax = 0.4
 
 diff_coeff =1.83180150273944
 diff_coeff_2= 1.203755273228775
@@ -59,7 +59,7 @@ sigma_s12 = 0.03560287029288702
 
 [AuxKernels]
 [diffusion-flux-u1]
-    execute_on = timestep_end
+    execute_on = linear
     type = DiffusionFluxComponent
     field = u1
     diffCoeff = ${replace diff_coeff}
@@ -68,7 +68,7 @@ sigma_s12 = 0.03560287029288702
 	
   []
   [diffusion-flux-u2]
-    execute_on = timestep_end
+    execute_on = linear
     type = DiffusionFluxComponent
     field = u2
     diffCoeff = ${replace diff_coeff_2}
@@ -135,8 +135,9 @@ sigma_s12 = 0.03560287029288702
       type = PostprocessorNeumannBC_Albedo
     variable = u1
     boundary = right
+    alpha = 0.0
     postprocessor = right_u1
-	  execute_on = linear
+      
   []
   
   [entry-u2]
@@ -149,8 +150,9 @@ sigma_s12 = 0.03560287029288702
     type = PostprocessorNeumannBC_Albedo
     variable = u2
     boundary = right
+    alpha = 0.0
     postprocessor = right_u2
-    execute_on = linear
+
   []
   
    
@@ -162,7 +164,7 @@ sigma_s12 = 0.03560287029288702
 
 [Executioner]
   type = Eigenvalue
-   solve_type = 'PJFNK'
+  solve_type = 'PJFNK'
   petsc_options_iname = '-pc_type -pc_hypre_type'
   petsc_options_value = 'hypre boomeramg'
   nl_abs_tol = 1e-8
@@ -180,12 +182,13 @@ sigma_s12 = 0.03560287029288702
 [VectorPostprocessors]
   [eigenvalue-data]
     type = Eigenvalues
-    execute_on = 'timestep_end final'
+    execute_on = 'initial'
   []
  
   [x-data]
     type = LineValueSampler
-    execute_on = 'timestep_end final'
+    #execute_on = 'timestep_end final'
+    execute_on = 'initial'
     variable = 'u1 u2'    # output data
     start_point = '${replace xmin} 0 0'
     end_point = '${replace xmax} 0 0'
@@ -199,6 +202,7 @@ sigma_s12 = 0.03560287029288702
    # type = ElementIntegralVariablePostprocessor
     #variable ='u1 u2'
     #execute_on = linear
+    #execute_on = 'initial'
  #[]
  
  
@@ -206,12 +210,14 @@ sigma_s12 = 0.03560287029288702
     type = PointValue
     point = '${replace xmax} 0 0'
     variable =diffFlux_u2
+    execute_on = initial
   
   []
   [right_u1]
     type = PointValue
     point = '${replace xmax} 0 0'
     variable =diffFlux_u1
+    execute_on = initial
   
   []
   
@@ -221,13 +227,15 @@ sigma_s12 = 0.03560287029288702
     type = ElementExtremeValue
     variable = u1
     value_type = max
-	execute_on=linear
+	#execute_on=linear
+    execute_on = linear
   []
    [u-normalized2]
     type = ElementExtremeValue
     variable = u2
     value_type = max
-	execute_on=linear
+	#execute_on=linear
+    execute_on = linear
   []
 
  
