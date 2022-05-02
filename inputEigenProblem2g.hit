@@ -199,14 +199,14 @@ sigma_s12 = 0.03560287029288702
     type = PointValue
     point = '${replace xmax} 0 0'
     variable =diffFlux_u2
-	#execute_on = 'initial'
+	#execute_on = 'timestep_end final'
   
   []
   [u1_end_flux]
     type = PointValue
     point = '${replace xmax} 0 0'
     variable =diffFlux_u1
-  #execute_on = 'initial'
+  #execute_on = 'timestep_end final'
   []
  
 []

@@ -4,7 +4,7 @@
 
 # Parameters
 xmin = 0.00000e+00
-xmax = 0.4
+xmax = 3.44
 
 diff_coeff =1.83180150273944
 diff_coeff_2= 1.203755273228775
@@ -132,11 +132,12 @@ sigma_s12 = 0.03560287029288702
   []
   
   [exit-u1]
-      type = PostprocessorNeumannBC_Albedo
+      type = AlbedoBC
     variable = u1
     boundary = right
-    alpha = 0.0
-    postprocessor = right_u1
+    alpha = .5
+   
+	
       
   []
   
@@ -147,11 +148,12 @@ sigma_s12 = 0.03560287029288702
     value = 0
   []
   [exit-u2]
-    type = PostprocessorNeumannBC_Albedo
+      type = AlbedoBC
     variable = u2
     boundary = right
-    alpha = 0.0
-    postprocessor = right_u2
+    alpha = .3
+   
+	
 
   []
   
@@ -169,12 +171,9 @@ sigma_s12 = 0.03560287029288702
   petsc_options_value = 'hypre boomeramg'
   nl_abs_tol = 1e-8
   nl_rel_tol = 1e-8
-  
-   # Postprocessor value to normalize
-  normalization =u-normalized 
-  # Value to set normilization to
- 
-  
+
+     # Postprocessor value to normalize
+  normalization ='u1max'
  
   
 []
@@ -182,13 +181,13 @@ sigma_s12 = 0.03560287029288702
 [VectorPostprocessors]
   [eigenvalue-data]
     type = Eigenvalues
-    execute_on = 'initial'
+   execute_on = 'timestep_end final'
   []
  
   [x-data]
     type = LineValueSampler
-    #execute_on = 'timestep_end final'
-    execute_on = 'initial'
+    execute_on = 'timestep_end final'
+    #execute_on = 'initial'
     variable = 'u1 u2'    # output data
     start_point = '${replace xmin} 0 0'
     end_point = '${replace xmax} 0 0'
@@ -198,39 +197,33 @@ sigma_s12 = 0.03560287029288702
 []
 
 [Postprocessors]
-  #[unorm]
-   # type = ElementIntegralVariablePostprocessor
-    #variable ='u1 u2'
-    #execute_on = linear
-    #execute_on = 'initial'
- #[]
  
  
   [right_u2]
     type = PointValue
     point = '${replace xmax} 0 0'
-    variable =diffFlux_u2
-    execute_on = initial
+    variable =u2
+     execute_on = 'timestep_end final'
   
   []
   [right_u1]
     type = PointValue
     point = '${replace xmax} 0 0'
-    variable =diffFlux_u1
-    execute_on = initial
+    variable =u1
+     execute_on = 'timestep_end final'
   
   []
   
 
 
-   [u-normalized]
+   [u1max]
     type = ElementExtremeValue
     variable = u1
     value_type = max
 	#execute_on=linear
     execute_on = linear
   []
-   [u-normalized2]
+   [u2max]
     type = ElementExtremeValue
     variable = u2
     value_type = max

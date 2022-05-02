@@ -33,10 +33,8 @@ DiffusionFluxComponent::DiffusionFluxComponent(const InputParameters & parameter
   : AuxKernel(parameters),
     _component(getParam<MooseEnum>("component")),
     // Initialize variable gradient
-    _gradU(coupledGradient("field")),
-    // Initialize parameters
-    _diffCoeff(getParam<Real>("diffCoeff"))
-    //_grad_test(getParam<Real>("grad_test"))
+    _gradU(coupledGradient("field"))
+
 {
 }
 
@@ -46,5 +44,5 @@ DiffusionFluxComponent::computeValue()
   // Access the gradient of the variable at this quadrature point, then pull out the 
   // "component" of it requested (x, y or z). Note, that getting a particular component 
   // of a gradient is done using the parenthesis operator.
- return - _diffCoeff * _gradU[_qp](_component);
+ return _gradU[_qp](_component);
 }

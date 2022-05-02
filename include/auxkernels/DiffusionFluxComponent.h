@@ -39,6 +39,5 @@ protected:
   const VariableGradient & _gradU;
 
   /// Add here other parameters needed
-  Real _diffCoeff;
   //Real _grad_test;
 };  
