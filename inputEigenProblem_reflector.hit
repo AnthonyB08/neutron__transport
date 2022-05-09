@@ -27,13 +27,13 @@ u_left = 0
     dim = 1
     xmin = ${replace xmin}
     xmax = ${replace xmax}
-    nx = 30
+    nx = 20
     elem_type = edge3
   []
 []
 
 [Variables]
-  [u_v]
+  [u_r]
     order = second
     family = lagrange
   
@@ -44,13 +44,13 @@ u_left = 0
 [Kernels]
   [diffusion-term]
     type = DiffusionTerm
-    variable = u_v     # produced quantity
+    variable = u_r     # produced quantity
     diffCoeff = ${replace diff_coeff}
   []
   
   [eigenvalue-term]
     type = CoefReaction
-    variable = u_v    # produced quantity
+    variable = u_r     # produced quantity
     extra_vector_tags='eigen'
 	coefficient = -1.0
   []
@@ -63,21 +63,17 @@ u_left = 0
   [entry]
     type = NeumannBC
 	
-    variable = u_v
+    variable = u_r
     boundary = left
     value = ${replace u_left}
   []
  
-  [exit-u]
-      type = VacuumBC
-    variable = u_v
+   [exit-u]
+    type = AlbedoBC
+    variable = u_r
     boundary = right
-    
-   
-	
-      
+	alpha= 0.1
   []
-  
  
 
 []
@@ -105,7 +101,7 @@ u_left = 0
   [x-data]
     type = LineValueSampler
     execute_on = 'timestep_end final'
-    variable = 'u_v'    # output data
+    variable = 'u_r'    # output data
     start_point = '${replace xmin} 0 0'
     end_point = '${replace xmax} 0 0'
     num_points = 20
@@ -116,7 +112,7 @@ u_left = 0
  
    [u-normalized]
     type = ElementExtremeValue
-    variable = u_v
+    variable = u_r
     value_type = max
 	execute_on=linear
   []

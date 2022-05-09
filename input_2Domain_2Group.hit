@@ -16,7 +16,7 @@
     type = GeneratedMeshGenerator
     dim = 1
     xmin = 3.44
-    xmax = 10.0
+    xmax = 10
     nx = 300
     boundary_name_prefix = omega_2
     elem_type = edge3
@@ -41,7 +41,7 @@
     block_id = 2
     block_name = omega_2
     bottom_left = '3.44 0 0'
-    top_right = '10.0 1 0'
+    top_right = '10 1 0'
   []
   [mod3]
     type = SideSetsBetweenSubdomainsGenerator
@@ -70,17 +70,34 @@
     block = omega_1
     order = second
     family = lagrange
-    initial_condition = 100000
+    initial_condition = 1000
+  []
+  [u2_c]
+    block = omega_1
+    order = second
+    family = lagrange
+    initial_condition = 1000
   []
   [u1_m]
     block = omega_2
     order = second
     family = lagrange
-    initial_condition = 100000
+    initial_condition = 1000
+  []
+  [u2_m]
+    block = omega_2
+    order = second
+    family = lagrange
+    initial_condition = 1000
   []
 []
 [AuxVariables]
   [diffFlux_u1_c]
+    block = omega_1
+    order = first
+    family = monomial_vec
+  []
+  [diffFlux_u2_c]
     block = omega_1
     order = first
     family = monomial_vec
@@ -90,12 +107,27 @@
     order = first
     family = monomial_vec
   []
+  [diffFlux_u2_m]
+    block = omega_2
+    order = first
+    family = monomial_vec
+  []
   [diffFlux_u1_c_r]
     block = omega_1
     order = first
     family = monomial
   []
+  [diffFlux_u2_c_r]
+    block = omega_1
+    order = first
+    family = monomial
+  []
   [diffFlux_u1_m_r]
+    block = omega_2
+    order = first
+    family = monomial
+  []
+  [diffFlux_u2_m_r]
     block = omega_2
     order = first
     family = monomial
@@ -106,31 +138,76 @@
     type = DiffusionTerm
     block = omega_1
     variable = u1_c
-    diffCoeff = 1.84
+    diffCoeff = 1.33
+  []
+  [diffusion_term_u2_c]
+    type = DiffusionTerm
+    block = omega_1
+    variable = u2_c
+    diffCoeff = 0.0292
   []
   [diffusion_term_u1_m]
     type = DiffusionTerm
     block = omega_2
     variable = u1_m
-    diffCoeff = 1.64
+    diffCoeff = 0.725
+  []
+  [diffusion_term_u2_m]
+    type = DiffusionTerm
+    block = omega_2
+    variable = u2_m
+    diffCoeff = 0.452
+  []
+  [group_scattering_u2_c]
+    type = SourceTermG2_May8
+    block = omega_1
+    variable = u2_c
+    coupledGroupA = u1_c
+    sigma_sa = 3.21e-07
+  []
+  [group_scattering_u2_m]
+    type = SourceTermG2_May8
+    block = omega_2
+    variable = u2_m
+    coupledGroupA = u1_m
+    sigma_sa = 0.000374
   []
   [fission_source_u1_c]
     type = FissionSource
     block = omega_1
     variable = u1_c
-    Sigma_nu = 0.174
+    Sigma_nu = 0.22
+  []
+  [fission_source_u2_to_u1_c]
+    type = SourceTermG2_May8
+    block = omega_1
+    variable = u1_c
+    coupledGroupA = u2_c
+    sigma_sa = 21.6
   []
   [abs_u1_c]
     type = SourceTermG1
     block = omega_1
     variable = u1_c
-    sigma_sa = -0.0745
+    sigma_sa = -0.0761
+  []
+  [abs_u2_c]
+    type = SourceTermG1
+    block = omega_1
+    variable = u2_c
+    sigma_sa = -11.0
   []
   [abs_u1_m]
     type = SourceTermG1
     block = omega_2
     variable = u1_m
-    sigma_sa = -0.00534
+    sigma_sa = -0.00147
+  []
+  [abs_u2_m]
+    type = SourceTermG1
+    block = omega_2
+    variable = u2_m
+    sigma_sa = -0.000594
   []
 []
 [InterfaceKernels]
@@ -139,13 +216,28 @@
     variable = u1_c
     neighbor_var = u1_m
     boundary = interface_12
-    D = 1.84
-    D_neighbor = 1.64
+    D = 1.33
+    D_neighbor = 0.725
   []
   [scalar_flux_jump_u1]
     type = InterfacePartition
     variable = u1_c
     neighbor_var = u1_m
+    boundary = interface_12
+    kCoeff = 1
+  []
+  [scalar_flux_continuity_u2]
+    type = InterfaceDiffusion
+    variable = u2_c
+    neighbor_var = u2_m
+    boundary = interface_12
+    D = 0.0292
+    D_neighbor = 0.452
+  []
+  [scalar_flux_jump_u2]
+    type = InterfacePartition
+    variable = u2_c
+    neighbor_var = u2_m
     boundary = interface_12
     kCoeff = 1
   []
@@ -155,16 +247,32 @@
     type = HeatFlux
     block = omega_1
     field = u1_c
-    thCondCoeff = 1.84
+    thCondCoeff = 1.33
     variable = diffFlux_u1_c
+    execute_on = timestep_end
+  []
+  [diffusion_flux_u2_c]
+    type = HeatFlux
+    block = omega_1
+    field = u2_c
+    thCondCoeff = 0.0292
+    variable = diffFlux_u2_c
     execute_on = timestep_end
   []
   [diffusion_flux_u1_m]
     type = HeatFlux
     block = omega_2
     field = u1_m
-    thCondCoeff = 1.64
+    thCondCoeff = 0.725
     variable = diffFlux_u1_m
+    execute_on = timestep_end
+  []
+  [diffusion_flux_u2_m]
+    type = HeatFlux
+    block = omega_2
+    field = u2_m
+    thCondCoeff = 0.452
+    variable = diffFlux_u2_m
     execute_on = timestep_end
   []
   [diffusion_flux_u1_c_r]
@@ -175,12 +283,28 @@
     variable = diffFlux_u1_c_r
     execute_on = timestep_end
   []
+  [diffusion_flux_u2_c_r]
+    type = VectorVariableComponentAux
+    block = omega_1
+    vector_variable = diffFlux_u2_c
+    component = x
+    variable = diffFlux_u2_c_r
+    execute_on = timestep_end
+  []
   [diffusion_flux_u1_m_r]
     type = VectorVariableComponentAux
     block = omega_2
     vector_variable = diffFlux_u1_m
     component = x
     variable = diffFlux_u1_m_r
+    execute_on = timestep_end
+  []
+  [diffusion_flux_u2_m_r]
+    type = VectorVariableComponentAux
+    block = omega_2
+    vector_variable = diffFlux_u2_m
+    component = x
+    variable = diffFlux_u2_m_r
     execute_on = timestep_end
   []
 []
@@ -191,9 +315,20 @@
     boundary = omega_1_left
     value = 0
   []
+  [entry_u2]
+    type = NeumannBC
+    variable = u2_c
+    boundary = omega_1_left
+    value = 0
+  []
   [exit_u1]
     type = VacuumBC
     variable = u1_m
+    boundary = omega_2_right
+  []
+  [exit_u2]
+    type = VacuumBC
+    variable = u2_m
     boundary = omega_2_right
   []
 []
@@ -202,7 +337,7 @@
     type = ParsedFunction
     value = flux_ref
     vars = flux_ref
-    vals = 0.0
+    vals = 0
   []
 []
 [Executioner]
@@ -220,7 +355,7 @@
   [omega_1]
     type = LineValueSampler
     execute_on = 'timestep_end final'
-    variable = 'u1_c diffFlux_u1_c_r'
+    variable = 'u1_c u2_c diffFlux_u1_c_r diffFlux_u2_c_r'
     start_point = '0.0 0 0'
     end_point = '3.43656 0 0'
     num_points = 601
@@ -229,9 +364,9 @@
   [omega_2]
     type = LineValueSampler
     execute_on = 'timestep_end final'
-    variable = 'u1_m diffFlux_u1_m_r'
+    variable = 'u1_m u2_m diffFlux_u1_m_r diffFlux_u2_m_r'
     start_point = '3.4434399999999994 0 0'
-    end_point = '10.0 0 0'
+    end_point = '10 0 0'
     num_points = 601
     sort_by = id
   []
