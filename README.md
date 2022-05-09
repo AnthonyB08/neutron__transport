@@ -16,7 +16,7 @@ Run the project on `Binder`: [![Binder](https://mybinder.org/badge_logo.svg)](ht
 |:---:|
 | <img width="380" src="pics/sphere.jpeg" title="Problem domain"> |
 | <p style="text-align:center;"><b>Problem domain sketch.</b></p> |
-| <img width="380" src="pics/Partially-reflected-plutonium-sphere.png" title="Results"> |
+| <img width="380" src="pics/Partially-reflected-plutonium-sphere.jpeg" title="Results"> |
 | <p style="text-align:center;"><b> Results.</b></p> |
 
 References:
