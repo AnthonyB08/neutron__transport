@@ -1,4 +1,4 @@
-#Spherica Neutron Transport FDM  vs. FEM
+#Spherical Neutron Transport FDM  vs. FEM
 
 UMass Lowell Spring 2022 <br>
 Dept. of Chemical Engineering, Nuclear Program <br>
