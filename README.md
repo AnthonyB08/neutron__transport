@@ -1,4 +1,4 @@
-#Spherical Neutron Transport FDM  vs. FEM
+# Spherical Neutron Transport FDM  vs. FEM
 
 UMass Lowell Spring 2022 <br>
 Dept. of Chemical Engineering, Nuclear Program <br>
@@ -16,7 +16,7 @@ Run the project on `Binder`: [![Binder](https://mybinder.org/badge_logo.svg)](ht
 |:---:|
 | <img width="380" src="pics/Partially-reflected-plutonium-sphere.jpeg" title="Demon Core 1946"> |
 | <p style="text-align:center;"><b> Results.</b></p> |
-| <img width="380" src="pics/Domain.jpeg" title="Problem domain"> |
+| <img width="380" src="pics/Domain.jpeg" title="Demon Core 1946"> |
 | <p style="text-align:center;"><b>Problem domain sketch.</b></p> |
 References:
 
