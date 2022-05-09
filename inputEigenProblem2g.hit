@@ -4,7 +4,7 @@
 
 # Parameters
 xmin = 0.00000e+00
-xmax = 3.44
+xmax = 4.44
 
 diff_coeff = 1.83180150273944
 diff_coeff_2 = 1.203755273228775
@@ -26,7 +26,7 @@ sigma_s12 = 0.03560287029288702
     dim = 1
     xmin = ${replace xmin}
     xmax = ${replace xmax}
-    nx = 35
+    nx = 20
 	#45
 	#30
     elem_type = edge3
@@ -111,12 +111,12 @@ sigma_s12 = 0.03560287029288702
     sigma_sa = ${replace sigma_s12}
     coupledGroupB = u2
   []
-  [source-term-1]
-    type = SourceTermG1
-    variable = u1
+  #[source-term-1]
+   # type = SourceTermG1
+    #variable = u1
     
-    sigma_sa = ${replace sigma_s12}
-  []
+    #sigma_sa = ${replace sigma_s12}
+  #[]
 []
 
 [BCs]
@@ -163,7 +163,7 @@ sigma_s12 = 0.03560287029288702
 [VectorPostprocessors]
   [eigenvalue-data]
     type = Eigenvalues
-    execute_on = 'timestep_end final'
+    execute_on = 'timestep_end '
   []
  
   [x-data]
@@ -172,17 +172,17 @@ sigma_s12 = 0.03560287029288702
     variable = 'u1 u2'    # output data
     start_point = '${replace xmin} 0 0'
     end_point = '${replace xmax} 0 0'
-    num_points = 20
+    num_points = 19
     sort_by = id
   []
 []
 
 [Postprocessors]
-  #[unorm]
-   # type = ElementIntegralVariablePostprocessor
-    #variable ='u1 u2'
-    #execute_on = linear
- #[]
+  [unorm]
+    type = ElementIntegralVariablePostprocessor
+    variable ='u1 u2'
+    execute_on = linear
+ []
    [u-normalized]
     type = ElementExtremeValue
     variable = u1
